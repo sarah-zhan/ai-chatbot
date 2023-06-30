@@ -1,10 +1,12 @@
 import { Configuration, OpenAIApi } from 'openai';
 import { process } from './env';
 
+// config
 const configuration = new Configuration({
 	apiKey: process.env.OPENAI_API_KEY,
 });
 
+// new instance of OpenAIApi
 const openai = new OpenAIApi(configuration);
 
 const chatbotConversation = document.getElementById('chatbot-conversation');
@@ -23,7 +25,8 @@ document.addEventListener('submit', e => {
 			role: 'user',
 			content: userInput.value,
 		});
-    console.log(talkArray);
+    // console.log(dialogArray);
+    fetchAnswer();
 
 	const newSpeechBubble = document.createElement('div');
 	newSpeechBubble.classList.add('speech', 'speech-human');
@@ -32,6 +35,17 @@ document.addEventListener('submit', e => {
 	userInput.value = '';
 	chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
 });
+
+const fetchAnswer = async () => {
+    const response = await openai.createChatCompletion({
+			model: 'gpt-3.5-turbo',
+			messages: dialogArray,
+		});
+        // console.log('fetch response', response);
+	dialogArray.push(response.data.choices[0].message);
+	renderTypewriterText(response.data.choices[0].message.content);
+    // console.log(dialogArray);
+}
 
 const renderTypewriterText = text => {
 	const newSpeechBubble = document.createElement('div');
