@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, push } from 'firebase/database';
+import { getDatabase, ref, push, get } from 'firebase/database';
 import { Configuration, OpenAIApi } from 'openai';
 import { process, firebase } from './env';
 
@@ -59,19 +59,26 @@ document.addEventListener('submit', e => {
 });
 
 const fetchAnswer = async () => {
-	const response = await openai.createChatCompletion({
-		model: 'gpt-3.5-turbo',
-		messages: dialogArray,
-		//stay between -1 and 1
-		presence_penalty: 0,
-		frequency_penalty: 0.3, //number too high, make it too difficult to generate content, bad grammar
+	get(conversationRef).then(snapshot => {
+		if (snapshot.exists()) {
+			console.log(Object.values(snapshot.val()));
+			// 	const response = await openai.createChatCompletion({
+			// 	model: 'gpt-3.5-turbo',
+			// 	messages: dialogArray,
+			// 	//stay between -1 and 1
+			// 	presence_penalty: 0,
+			// 	frequency_penalty: 0.3, //number too high, make it too difficult to generate content, bad grammar
+			// 	});
+			// // console.log('fetch response', response);
+			// dialogArray.push(response.data.choices[0].message);
+			// renderTypewriterText(response.data.choices[0].message.content);
+			// console.log(response.data.choices[0].message.content);
+		} else {
+			console.log('No data available');
+		}
 	});
-	// console.log('fetch response', response);
-	dialogArray.push(response.data.choices[0].message);
-	renderTypewriterText(response.data.choices[0].message.content);
-	// console.log(response.data.choices[0].message.content);
 };
-
+fetchAnswer();
 const renderTypewriterText = text => {
 	const newSpeechBubble = document.createElement('div');
 	newSpeechBubble.classList.add('speech', 'speech-ai', 'blinking-cursor');
