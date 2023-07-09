@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, push, get } from 'firebase/database';
+import { getDatabase, ref, push, get, remove } from 'firebase/database';
 import { Configuration, OpenAIApi } from 'openai';
 import { process, firebase } from './env';
 
@@ -95,6 +95,12 @@ const renderTypewriterText = text => {
 		chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
 	}, 50);
 };
+
+document.getElementById('clear-btn').addEventListener('click', () => {
+	remove(conversationRef);
+	chatbotConversation.innerHTML =
+		'<div class="speech speech-ai">How can I help you?</div>';
+});
 
 const renderConversationFromDb = () => {
 	get(conversationRef).then(async snapshot => {
