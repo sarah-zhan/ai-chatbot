@@ -15,7 +15,7 @@ const chatbotConversation = document.getElementById('chatbot-conversation');
 const dialogArray = [
 	{
 		role: 'system',
-		content: 'You are always available to help.', //chatbot personality
+		content: 'You are a nice assistance with thoughtful mindset.', //chatbot personality
 	},
 ];
 
@@ -47,8 +47,8 @@ const fetchAnswer = async () => {
 	});
 	// console.log('fetch response', response);
 	dialogArray.push(response.data.choices[0].message);
-	// renderTypewriterText(response.data.choices[0].message.content);
-	console.log(response.data.choices[0].message.content);
+	renderTypewriterText(response.data.choices[0].message.content);
+	// console.log(response.data.choices[0].message.content);
 };
 
 const renderTypewriterText = text => {
