@@ -58,27 +58,28 @@ document.addEventListener('submit', e => {
 	chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
 });
 
-const fetchAnswer = async () => {
-	get(conversationRef).then(snapshot => {
+const fetchAnswer = () => {
+	get(conversationRef).then(async snapshot => {
 		if (snapshot.exists()) {
-			console.log(Object.values(snapshot.val()));
-			// 	const response = await openai.createChatCompletion({
-			// 	model: 'gpt-3.5-turbo',
-			// 	messages: dialogArray,
-			// 	//stay between -1 and 1
-			// 	presence_penalty: 0,
-			// 	frequency_penalty: 0.3, //number too high, make it too difficult to generate content, bad grammar
-			// 	});
-			// // console.log('fetch response', response);
-			// dialogArray.push(response.data.choices[0].message);
-			// renderTypewriterText(response.data.choices[0].message.content);
+			const dialogArray = Object.values(snapshot.val());
+			dialogArray.unshift(dialogObject);
+			const response = await openai.createChatCompletion({
+				model: 'gpt-3.5-turbo',
+				messages: dialogArray,
+				//stay between -1 and 1
+				presence_penalty: 0,
+				frequency_penalty: 0.3, //number too high, make it too difficult to generate content, bad grammar
+			});
+			// console.log('fetch response', response);
+			push(conversationRef, response.data.choices[0].message);
+			renderTypewriterText(response.data.choices[0].message.content);
 			// console.log(response.data.choices[0].message.content);
 		} else {
 			console.log('No data available');
 		}
 	});
 };
-fetchAnswer();
+
 const renderTypewriterText = text => {
 	const newSpeechBubble = document.createElement('div');
 	newSpeechBubble.classList.add('speech', 'speech-ai', 'blinking-cursor');
