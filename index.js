@@ -7,6 +7,7 @@ const configuration = new Configuration({
 });
 
 // new instance of OpenAIApi
+https://ai-chatbot-7c584-default-rtdb.firebaseio.com/
 const openai = new OpenAIApi(configuration);
 
 const chatbotConversation = document.getElementById('chatbot-conversation');
