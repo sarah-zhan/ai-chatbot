@@ -11,22 +11,23 @@ const openai = new OpenAIApi(configuration);
 
 const chatbotConversation = document.getElementById('chatbot-conversation');
 
+// array to save all the answers
 const dialogArray = [
 	{
 		role: 'system',
-		content: 'You are always available to help.',
+		content: 'You are always available to help.', //chatbot personality
 	},
 ];
 
 document.addEventListener('submit', e => {
 	e.preventDefault();
 	const userInput = document.getElementById('user-input');
-    dialogArray.push({
-			role: 'user',
-			content: userInput.value,
-		});
-    // console.log(dialogArray);
-    fetchAnswer();
+	dialogArray.push({
+		role: 'user',
+		content: userInput.value,
+	});
+	// console.log(dialogArray);
+	fetchAnswer();
 
 	const newSpeechBubble = document.createElement('div');
 	newSpeechBubble.classList.add('speech', 'speech-human');
@@ -37,15 +38,18 @@ document.addEventListener('submit', e => {
 });
 
 const fetchAnswer = async () => {
-    const response = await openai.createChatCompletion({
-			model: 'gpt-3.5-turbo',
-			messages: dialogArray,
-		});
-        // console.log('fetch response', response);
+	const response = await openai.createChatCompletion({
+		model: 'gpt-3.5-turbo',
+		messages: dialogArray,
+		//stay between -1 and 1
+		presence_penalty: 0,
+		frequency_penalty: 0.3, //number too high, make it too difficult to generate content, bad grammar
+	});
+	// console.log('fetch response', response);
 	dialogArray.push(response.data.choices[0].message);
-	renderTypewriterText(response.data.choices[0].message.content);
-    // console.log(dialogArray);
-}
+	// renderTypewriterText(response.data.choices[0].message.content);
+	console.log(response.data.choices[0].message.content);
+};
 
 const renderTypewriterText = text => {
 	const newSpeechBubble = document.createElement('div');
