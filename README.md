@@ -1,4 +1,4 @@
-# Yishan AI legal assistance
+# Yishan AI legal assistant
 
 ![Alt text](<images/Yishan legal bot.gif>)
 
