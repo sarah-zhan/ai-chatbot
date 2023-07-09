@@ -95,3 +95,28 @@ const renderTypewriterText = text => {
 		chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
 	}, 50);
 };
+
+const renderConversationFromDb = () => {
+	get(conversationRef).then(async snapshot => {
+		if (snapshot.exists()) {
+			const dialogArray = Object.values(snapshot.val());
+			dialogArray.forEach(dialog => {
+				const newSpeechBubble = document.createElement('div');
+				newSpeechBubble.classList.add('speech');
+				if (dialog.role === 'assistant') {
+					newSpeechBubble.classList.add('speech-ai');
+				} else if (dialog.role === 'user') {
+					newSpeechBubble.classList.add('speech-human');
+				}
+				chatbotConversation.appendChild(newSpeechBubble);
+				newSpeechBubble.textContent = dialog.content;
+			});
+		} else {
+			console.log('No data available');
+		}
+
+		chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
+	});
+};
+
+renderConversationFromDb();
