@@ -1,29 +1,49 @@
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref, push } from 'firebase/database';
 import { Configuration, OpenAIApi } from 'openai';
-import { process } from './env';
+import { process, firebase } from './env';
 
 // config
 const configuration = new Configuration({
 	apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Your web app's Firebase configuration
+const firebaseConfig = {
+	apiKey: firebase.env.FIREBASE_API_KEY,
+	authDomain: firebase.env.FIREBASE_AUTH_DOMAIN,
+	databaseURL: firebase.env.FIREBASE_DATABASE_URL,
+	projectId: firebase.env.FIREBASE_PROJECT_ID,
+	storageBucket: firebase.env.FIREBASE_STORAGE_BUCKET,
+	messagingSenderId: firebase.env.FIREBASE_MESSAGING_SENDER_ID,
+	appId: firebase.env.FIREBASE_APP_ID,
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// database
+const db = getDatabase(app);
+
+// conversation in db
+const conversationRef = ref(db);
+
 // new instance of OpenAIApi
-//https://ai-chatbot-7c584-default-rtdb.firebaseio.com/
 const openai = new OpenAIApi(configuration);
 
 const chatbotConversation = document.getElementById('chatbot-conversation');
 
-// array to save all the answers
-const dialogArray = [
-	{
-		role: 'system',
-		content: 'You are a nice assistance with thoughtful mindset.', //chatbot personality
-	},
-];
+// object to save all the answers
+const dialogObject = {
+	role: 'system',
+	content: 'You are a nice assistance with thoughtful mindset.', //chatbot personality
+};
 
 document.addEventListener('submit', e => {
 	e.preventDefault();
 	const userInput = document.getElementById('user-input');
-	dialogArray.push({
+	//database push method
+	push(conversationRef, {
 		role: 'user',
 		content: userInput.value,
 	});
