@@ -36,7 +36,7 @@ const chatbotConversation = document.getElementById('chatbot-conversation');
 // object to save all the answers
 const dialogObject = {
 	role: 'system',
-	content: 'You are a legal assistance with professional language.', //chatbot personality
+	content: 'You are a legal assistant with professional language.', //chatbot personality
 };
 
 document.addEventListener('submit', e => {
